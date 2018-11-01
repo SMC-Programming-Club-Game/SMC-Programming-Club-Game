@@ -1,0 +1,24 @@
+{
+  "name": "smc-programming-club-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SMC-Programming-Club-Game/SMC-Programming-Club-Game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SMC-Programming-Club-Game/SMC-Programming-Club-Game/issues"
+  },
+  "homepage": "https://github.com/SMC-Programming-Club-Game/SMC-Programming-Club-Game#readme",
+  "dependencies": {
+    "express": "4.16.4",
+    "phaser": "2.6.2"
+  }
+}
