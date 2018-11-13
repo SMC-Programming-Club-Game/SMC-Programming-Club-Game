@@ -4,6 +4,9 @@
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
         <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <!--added this script inclusion beacause the above one does not always work, this way we can rely on the included minified phaser file and not be dependant on their availability-->
+        <script type="text/javascript" src="phaser.min.js"></script>       
+
     </head>
     <body>
 
@@ -92,127 +95,132 @@
             }
         }
 
-        };
+        };    //// changed Phaser.AUTO -> Phaser.CANVAS, this fixed "uncaught DOMexception:failed to execute 'textImage2D' on 'WebGLRenderingContext': Taintedcanvases may not be loaded'"
+    //// i dont know why it fixed it, but now it properly loads, and also preoperly renders 'ground2.png' in all the spots it should, tom 10-31-18
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+function preload () {
 
-        function preload () {
+    game.load.atlas('tank', 'assets/games/tanks/tanks.png', 'assets/games/tanks/tanks.json');
+    game.load.atlas('enemy', 'assets/games/tanks/enemy-tanks.png', 'assets/games/tanks/tanks.json');
+    game.load.image('logo', 'assets/games/tanks/logo.png');
+    game.load.image('bullet', 'clubGameAssets/fire4.png');
 
-        game.load.atlas('tank', 'assets/tanks.png', 'assets/tanks.json');
-        game.load.atlas('enemy', 'assets/enemy-tanks.png', 'assets/tanks.json');
-        game.load.image('logo', 'assets/logo.png');
-        game.load.image('bullet', 'assets/bullet.png');
-        game.load.image('earth', 'assets/scorched_earth.png');
-        game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
+    ////edited earth -> ground2, tom 10-31-18
+    game.load.image('ground2', 'clubGameAssets/ground2.png');
 
-        }
 
-        var land;
+    game.load.spritesheet('kaboom', 'assets/games/tanks/explosion.png', 64, 64, 23);
+    
+}
 
-        var shadow;
-        var tank;
-        var turret;
+var land;
 
-        var enemies;
-        var enemyBullets;
-        var enemiesTotal = 0;
-        var enemiesAlive = 0;
-        var explosions;
+var shadow;
+var tank;
+var turret;
 
-        var logo;
+var enemies;
+var enemyBullets;
+var enemiesTotal = 0;
+var enemiesAlive = 0;
+var explosions;
 
-        var currentSpeed = 0;
-        var cursors;
+var logo;
 
-        var bullets;
-        var fireRate = 100;
-        var nextFire = 0;
+var currentSpeed = 0;
+var cursors;
 
-        function create () {
+var bullets;
+var fireRate = 100;
+var nextFire = 0;
 
-        //  Resize our game world to be a 2000 x 2000 square
-        game.world.setBounds(-1000, -1000, 2000, 2000);
+function create () {
 
-        //  Our tiled scrolling background
-        land = game.add.tileSprite(0, 0, 800, 600, 'earth');
-        land.fixedToCamera = true;
+    //  Resize our game world to be a 2000 x 2000 square
+    game.world.setBounds(-1000, -1000, 2000, 2000);
 
-        //  The base of our tank
-        tank = game.add.sprite(0, 0, 'tank', 'tank1');
-        tank.anchor.setTo(0.5, 0.5);
-        tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
+    //  Our tiled scrolling background
+    ////edited earth -> ground2, tom 10-31-18
+    land = game.add.tileSprite(0, 0, 800, 600, 'ground2');
+    land.fixedToCamera = true;
 
-        //  This will force it to decelerate and limit its speed
-        game.physics.enable(tank, Phaser.Physics.ARCADE);
-        tank.body.drag.set(0.2);
-        tank.body.maxVelocity.setTo(400, 400);
-        tank.body.collideWorldBounds = true;
+    //  The base of our tank
+    tank = game.add.sprite(0, 0, 'tank', 'tank1');
+    tank.anchor.setTo(0.5, 0.5);
+    tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
 
-        //  Finally the turret that we place on-top of the tank body
-        turret = game.add.sprite(0, 0, 'tank', 'turret');
-        turret.anchor.setTo(0.3, 0.5);
+    //  This will force it to decelerate and limit its speed
+    game.physics.enable(tank, Phaser.Physics.ARCADE);
+    tank.body.drag.set(1);
+    tank.body.maxVelocity.setTo(400, 400);
+    tank.body.collideWorldBounds = true;
 
-        //  The enemies bullet group
-        enemyBullets = game.add.group();
-        enemyBullets.enableBody = true;
-        enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
-        enemyBullets.createMultiple(100, 'bullet');
+    //  Finally the turret that we place on-top of the tank body
+    turret = game.add.sprite(0, 0, 'tank', 'turret');
+    turret.anchor.setTo(0.3, 0.5);
 
-        enemyBullets.setAll('anchor.x', 0.5);
-        enemyBullets.setAll('anchor.y', 0.5);
-        enemyBullets.setAll('outOfBoundsKill', true);
-        enemyBullets.setAll('checkWorldBounds', true);
+    //  The enemies bullet group
+    enemyBullets = game.add.group();
+    enemyBullets.enableBody = true;
+    enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
+    enemyBullets.createMultiple(100, 'bullet');
+    
+    enemyBullets.setAll('anchor.x', 0.5);
+    enemyBullets.setAll('anchor.y', 0.5);
+    enemyBullets.setAll('outOfBoundsKill', true);
+    enemyBullets.setAll('checkWorldBounds', true);
 
-        //  Create some baddies to waste :)
-        enemies = [];
+    //  Create some baddies to waste :)
+    enemies = [];
 
-        enemiesTotal = 20;
-        enemiesAlive = 20;
+    enemiesTotal = 20;
+    enemiesAlive = 20;
 
-        for (var i = 0; i < enemiesTotal; i++)
-        {
-            enemies.push(new EnemyTank(i, game, tank, enemyBullets));
-        }
+    for (var i = 0; i < enemiesTotal; i++)
+    {
+        enemies.push(new EnemyTank(i, game, tank, enemyBullets));
+    }
 
-        //  A shadow below our tank
-        shadow = game.add.sprite(0, 0, 'tank', 'shadow');
-        shadow.anchor.setTo(0.5, 0.5);
+    //  A shadow below our tank
+    shadow = game.add.sprite(0, 0, 'tank', 'shadow');
+    shadow.anchor.setTo(0.5, 0.5);
 
-        //  Our bullet group
-        bullets = game.add.group();
-        bullets.enableBody = true;
-        bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        bullets.createMultiple(30, 'bullet', 0, false);
-        bullets.setAll('anchor.x', 0.5);
-        bullets.setAll('anchor.y', 0.5);
-        bullets.setAll('outOfBoundsKill', true);
-        bullets.setAll('checkWorldBounds', true);
+    //  Our bullet group
+    bullets = game.add.group();
+    bullets.enableBody = true;
+    bullets.physicsBodyType = Phaser.Physics.ARCADE;
+    bullets.createMultiple(30, 'bullet', 0, false);
+    bullets.setAll('anchor.x', 0.5);
+    bullets.setAll('anchor.y', 0.5);
+    bullets.setAll('outOfBoundsKill', true);
+    bullets.setAll('checkWorldBounds', true);
 
-        //  Explosion pool
-        explosions = game.add.group();
+    //  Explosion pool
+    explosions = game.add.group();
 
-        for (var i = 0; i < 10; i++)
-        {
-            var explosionAnimation = explosions.create(0, 0, 'kaboom', [0], false);
-            explosionAnimation.anchor.setTo(0.5, 0.5);
-            explosionAnimation.animations.add('kaboom');
-        }
+    for (var i = 0; i < 10; i++)
+    {
+        var explosionAnimation = explosions.create(0, 0, 'kaboom', [0], false);
+        explosionAnimation.anchor.setTo(0.5, 0.5);
+        explosionAnimation.animations.add('kaboom');
+    }
 
-        tank.bringToTop();
-        turret.bringToTop();
+    tank.bringToTop();
+    turret.bringToTop();
 
-        logo = game.add.sprite(0, 200, 'logo');
-        logo.fixedToCamera = true;
+    logo = game.add.sprite(0, 200, 'logo');
+    logo.fixedToCamera = true;
 
-        game.input.onDown.add(removeLogo, this);
+    game.input.onDown.add(removeLogo, this);
 
-        game.camera.follow(tank);
-        game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
-        game.camera.focusOnXY(0, 0);
+    game.camera.follow(tank);
+    game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
+    game.camera.focusOnXY(0, 0);
 
-        cursors = game.input.keyboard.createCursorKeys();
+    cursors = game.input.keyboard.createCursorKeys();
 
-        }
+}
 
         function removeLogo () {
 
@@ -317,7 +325,7 @@
 
             bullet.reset(turret.x, turret.y);
 
-            bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
+            bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 5000)+5;
         }
 
         }
