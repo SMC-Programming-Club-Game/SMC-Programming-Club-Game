@@ -104,10 +104,12 @@ function preload () {
     game.load.atlas('tank', 'assets/games/tanks/tanks.png', 'assets/games/tanks/tanks.json');
     game.load.atlas('enemy', 'assets/games/tanks/enemy-tanks.png', 'assets/games/tanks/tanks.json');
     game.load.image('logo', 'assets/games/tanks/logo.png');
-    game.load.image('bullet', 'clubGameAssets/fire4.png');
+    game.load.image('bullet', 'assets/fire4.png');
+    game.load.spritesheet('game', 'assets/dwarfSprites.png', 37, 45, 18);
+
 
     ////edited earth -> ground2, tom 10-31-18
-    game.load.image('ground2', 'clubGameAssets/ground2.png');
+    game.load.image('ground2', 'assets/ground2.png');
 
 
     game.load.spritesheet('kaboom', 'assets/games/tanks/explosion.png', 64, 64, 23);
@@ -146,9 +148,9 @@ function create () {
     land.fixedToCamera = true;
 
     //  The base of our tank
-    tank = game.add.sprite(0, 0, 'tank', 'tank1');
+    tank = game.add.sprite(0, 0, 'dwarf', 'dawrf1');
     tank.anchor.setTo(0.5, 0.5);
-    tank.animations.add('move', ['tank1', 'tank2', 'tank3', 'tank4', 'tank5', 'tank6'], 20, true);
+    tank.animations.add('move');
 
     //  This will force it to decelerate and limit its speed
     game.physics.enable(tank, Phaser.Physics.ARCADE);
