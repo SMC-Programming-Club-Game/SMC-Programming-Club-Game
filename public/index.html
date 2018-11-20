@@ -45,7 +45,7 @@
 
         this.tank.angle = game.rnd.angle();
 
-        game.physics.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
+        //game.physics.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
 
         };
 
@@ -207,7 +207,7 @@
         game.input.onDown.add(removeLogo, this);
 
         game.camera.follow(tank);
-        game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
+        game.camera.deadzone = new Phaser.Rectangle(200, 200, 450, 250);
         game.camera.focusOnXY(0, 0);
 
         cursors = game.input.keyboard.createCursorKeys();
@@ -238,31 +238,35 @@
             }
         }
 
+        //Arrow Keys Move Tank
         if (cursors.left.isDown)
         {
-            tank.angle -= 4;
+            //  Moves the tank Leftwards
+            tank.x -= 5;
         }
-        else if (cursors.right.isDown)
+        
+        if (cursors.right.isDown)
         {
-            tank.angle += 4;
+            //  Moves the tank Rightwards
+            tank.x += 5;
         }
-
+        
         if (cursors.up.isDown)
         {
-            //  The speed we'll travel at
-            currentSpeed = 300;
+            //  Moves the tank Upwards
+            tank.y -= 5;
         }
-        else
+        
+        if (cursors.down.isDown)
         {
-            if (currentSpeed > 0)
-            {
-                currentSpeed -= 4;
-            }
+            //  Moves the tank Downwards
+            tank.y += 5;
         }
 
-        if (currentSpeed > 0)
+        if ( (cursors.left.isDown == false) || (cursors.right.isDown == false) || (cursors.up.isDown == false) || (cursors.down.isDown == false) )
         {
-            game.physics.arcade.velocityFromRotation(tank.rotation, currentSpeed, tank.body.velocity);
+            //  Stops dragging
+            tank.body.velocity = 0
         }
 
         land.tilePosition.x = -game.camera.x;
