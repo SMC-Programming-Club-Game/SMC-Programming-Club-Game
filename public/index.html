@@ -207,7 +207,6 @@
         game.input.onDown.add(removeLogo, this);
 
         game.camera.follow(tank);
-        game.camera.deadzone = new Phaser.Rectangle(200, 200, 450, 250);
         game.camera.focusOnXY(0, 0);
 
         cursors = game.input.keyboard.createCursorKeys();
@@ -293,6 +292,7 @@
         function bulletHitPlayer (tank, bullet) {
 
         bullet.kill();
+        //tank.kill();
 
         }
 
