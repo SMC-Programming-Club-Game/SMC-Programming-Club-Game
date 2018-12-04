@@ -45,7 +45,7 @@
 
         this.tank.angle = game.rnd.angle();
 
-        //game.physics.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
+        game.physics.arcade.velocityFromRotation(this.tank.rotation, 100, this.tank.body.velocity);
 
         };
 
@@ -125,7 +125,7 @@
         var cursors;
 
         var bullets;
-        var fireRate = 100;
+        var fireRate = 500;
         var nextFire = 0;
 
         function create () {
@@ -321,7 +321,7 @@
 
             bullet.reset(turret.x, turret.y);
 
-            bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
+            bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer);
         }
 
         }
